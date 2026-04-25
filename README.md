@@ -36,3 +36,10 @@ Runs tests in console, in browser or with coverage.
 ### `lint`, `prettier`
 
 Runs linting and formatting for all files in `src` folder.
+
+
+S3 website URL:
+http://nodejs-aws-shop-react-tatsiana-shulha.s3-website.eu-north-1.amazonaws.com
+
+CloudFront URL:
+https://d10wk92h5h3hi6.cloudfront.net

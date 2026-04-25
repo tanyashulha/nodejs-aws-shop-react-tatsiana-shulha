@@ -43,3 +43,39 @@ http://nodejs-aws-shop-react-tatsiana-shulha.s3-website.eu-north-1.amazonaws.com
 
 CloudFront URL:
 https://d10wk92h5h3hi6.cloudfront.net
+
+
+# AWS SPA Deployment - React Shop
+
+## Task 2 - AWS S3 + CloudFront + CDK
+
+## What has been done
+
+### Task 2.1 - Manual deployment
+- S3 bucket created and configured for static website hosting
+- React application built and uploaded to S3 bucket
+- CloudFront distribution created and configured
+- SPA routing works correctly via CloudFront
+- Manual invalidation performed after updates
+
+---
+
+### Task 2.2 - Automated deployment (CDK)
+- AWS CDK project created (`infra`)
+- S3 bucket created via CDK
+- CloudFront distribution created via CDK
+- Automatic deployment of `dist` folder configured
+- CloudFront invalidation configured via CDK deployment process
+
+---
+
+## Links
+
+### CloudFront URL (CDK / production)
+https://ds21goe6zztre.cloudfront.net
+
+### CloudFront URL (manual / old)
+https://d10wk92h5h3hi6.cloudfront.net
+
+### S3 Website URL (manual deployment)
+http://nodejs-aws-shop-react-tatsiana-shulha.s3-website.eu-north-1.amazonaws.com

@@ -46,7 +46,7 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
 
     console.log("Result: ", result);
 
-    setFile(undefined);
+    setFile(file);
   };
   return (
     <Box>

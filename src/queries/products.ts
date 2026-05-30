@@ -3,15 +3,20 @@ import API_PATHS from "~/constants/apiPaths";
 import { AvailableProduct } from "~/models/Product";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import React from "react";
+import {
+  assertOkResponse,
+  getAuthorizedRequestConfig,
+} from "~/setupAxios";
 
 export function useAvailableProducts() {
   return useQuery<AvailableProduct[], AxiosError>(
     "available-products",
     async () => {
       const res = await axios.get<AvailableProduct[]>(
-        `${API_PATHS.product}/products`
+        `${API_PATHS.product}/products`,
+        getAuthorizedRequestConfig()
       );
-      return res.data;
+      return assertOkResponse(res);
     }
   );
 }
@@ -29,9 +34,10 @@ export function useAvailableProduct(id?: string) {
     ["product", { id }],
     async () => {
       const res = await axios.get<AvailableProduct>(
-        `${API_PATHS.product}/products/${id}`
+        `${API_PATHS.product}/products/${id}`,
+        getAuthorizedRequestConfig()
       );
-      return res.data;
+      return assertOkResponse(res);
     },
     { enabled: !!id }
   );
@@ -48,20 +54,20 @@ export function useRemoveProductCache() {
 
 export function useUpsertAvailableProduct() {
   return useMutation((values: AvailableProduct) =>
-    axios.post<AvailableProduct>(`${API_PATHS.product}/products`, values, {
-      headers: {
-        Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
-      },
-    })
+    axios
+      .post<AvailableProduct>(
+        `${API_PATHS.product}/products`,
+        values,
+        getAuthorizedRequestConfig()
+      )
+      .then(assertOkResponse)
   );
 }
 
 export function useDeleteAvailableProduct() {
   return useMutation((id: string) =>
-    axios.delete(`${API_PATHS.bff}/product/${id}`, {
-      headers: {
-        Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
-      },
-    })
+    axios
+      .delete(`${API_PATHS.bff}/product/${id}`, getAuthorizedRequestConfig())
+      .then(assertOkResponse)
   );
 }

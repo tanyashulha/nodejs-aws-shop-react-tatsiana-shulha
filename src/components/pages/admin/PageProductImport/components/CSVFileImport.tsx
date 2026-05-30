@@ -1,7 +1,13 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import Alert from "@mui/material/Alert";
 import axios from "axios";
+import {
+  assertOkResponse,
+  getAuthorizedRequestConfig,
+  getAxiosErrorMessage,
+} from "~/setupAxios";
 
 type CSVFileImportProps = {
   url: string;
@@ -10,49 +16,64 @@ type CSVFileImportProps = {
 
 export default function CSVFileImport({ url, title }: CSVFileImportProps) {
   const [file, setFile] = React.useState<File>();
+  const [errorMessage, setErrorMessage] = React.useState<string>();
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      const file = files[0];
-      setFile(file);
+      setFile(files[0]);
+      setErrorMessage(undefined);
     }
   };
 
   const removeFile = () => {
     setFile(undefined);
+    setErrorMessage(undefined);
   };
 
   const uploadFile = async () => {
     if (!file) return;
 
-    console.log("uploadFile to", url);
+    setErrorMessage(undefined);
 
-    const response = await axios({
-      method: "GET",
-      url,
-      params: {
-        name: encodeURIComponent(file.name),
-      },
-    });
+    try {
+      const res = await axios.get(url, {
+        ...getAuthorizedRequestConfig(),
+        params: { name: file.name },
+      });
 
-    console.log("File to upload: ", file.name);
-    console.log("Uploading to: ", response.data);
+      const signedUrl = assertOkResponse(res);
 
-    const result = await fetch(response.data, {
-      method: "PUT",
-      body: file,
-    });
+      const result = await fetch(signedUrl, {
+        method: "PUT",
+        body: file,
+      });
 
-    console.log("Result: ", result);
+      if (!result.ok) {
+        setErrorMessage(`Error ${result.status}: S3 upload failed`);
+        return;
+      }
 
-    setFile(file);
+      setFile(undefined);
+    } catch (error) {
+      setErrorMessage(getAxiosErrorMessage(error));
+    }
   };
+
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
         {title}
       </Typography>
+      {errorMessage && (
+        <Alert
+          severity="error"
+          sx={{ mb: 2 }}
+          onClose={() => setErrorMessage(undefined)}
+        >
+          {errorMessage}
+        </Alert>
+      )}
       {!file ? (
         <input type="file" onChange={onFileChange} />
       ) : (

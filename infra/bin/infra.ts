@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib/core';
 import { InfraStack } from '../lib/infra-stack';
+import { CartApiProxyStack } from '../lib/cart-api-proxy-stack';
 
 const app = new cdk.App();
 new InfraStack(app, 'InfraStack', {
@@ -18,3 +19,5 @@ new InfraStack(app, 'InfraStack', {
 
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });
+
+new CartApiProxyStack(app, 'CartApiProxyStack', {});
